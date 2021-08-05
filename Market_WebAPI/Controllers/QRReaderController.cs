@@ -12,6 +12,7 @@ namespace Market_WebAPI.Controllers
 {
     public class QRReaderController : ApiController
     {
+        /*
         public string PostIniciarColeta()
         {
             try
@@ -61,5 +62,6 @@ namespace Market_WebAPI.Controllers
                 return "Failed";
             }
         }
+        */
     }
 }

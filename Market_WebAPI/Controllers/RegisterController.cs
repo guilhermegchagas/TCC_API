@@ -13,23 +13,18 @@ namespace Market_WebAPI.Controllers
     public class RegisterController : ApiController
     {
         // POST api/register
-        public HttpResponseMessage PostCliente([FromBody]Cliente cliente)
+        public HttpResponseMessage PostCliente([FromBody]Usuario usuario)
         {
             HttpResponseMessage response = null;
             try
             {
-                if(!DatabaseAcess.ValidarCPFCliente(cliente.CPF))
-                {
-                    response = Request.CreateResponse(HttpStatusCode.Created, "CPF já existe.");
-                    return response;
-                }
-                if (!DatabaseAcess.ValidarEmailCliente(cliente.Email))
+                if (!DatabaseAcess.ValidarEmailCliente(usuario.Email))
                 {
                     response = Request.CreateResponse(HttpStatusCode.Created, "Email já existe.");
                     return response;
                 }
-                DatabaseAcess.CadastrarCliente(cliente);
-                response = Request.CreateResponse(HttpStatusCode.Created, "Cliente cadastrado.");
+                DatabaseAcess.CadastrarUsuario(usuario);
+                response = Request.CreateResponse(HttpStatusCode.Created, "Usuário cadastrado.");
                 return response;
             }
             catch

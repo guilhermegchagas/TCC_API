@@ -220,7 +220,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\CuponController.cs" />
     <Compile Include="Controllers\QRReaderController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -230,7 +230,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CarrinhoReciclagem.cs" />
-    <Compile Include="Models\Cliente.cs" />
+    <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Cupom.cs" />
     <Compile Include="Models\CupomResgatado.cs" />
     <Compile Include="Models\DatabaseAcess.cs" />

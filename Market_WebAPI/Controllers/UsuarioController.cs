@@ -12,19 +12,19 @@ using System.Web.Http.Cors;
 namespace Market_WebAPI.Controllers
 {
     [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
-    public class ClientController : ApiController
+    public class UsuarioController : ApiController
     {
-        public Cliente GetClientInfo(string cpf)
+        public Usuario GetUsuarioInfo(int id)
         {
             try
             {
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                TokenStore tokenStore = TokenStore.GetTokenStore(cpf);
+                TokenStore tokenStore = TokenStore.GetTokenStore(id);
                 if (tokenStore.token == token)
                 {
-                    Cliente cliente = DatabaseAcess.BuscarClientePorCPF(cpf);
-                    cliente.Senha = string.Empty;
-                    return cliente;
+                    Usuario usuario = DatabaseAcess.BuscarUsuarioPorID(id);
+                    usuario.Senha = string.Empty;
+                    return usuario;
                 }
                 return null;
             }

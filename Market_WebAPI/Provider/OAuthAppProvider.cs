@@ -19,18 +19,18 @@ namespace Market_WebAPI.Provider
         {
             return Task.Factory.StartNew(() =>
             {
-                var cpf = context.UserName;
-                var senha = context.Password;
-                Cliente cliente = DatabaseAcess.BuscarClientePorCPF(cpf);
-                if(cliente != null)
+                string email = context.UserName;
+                string senha = context.Password;
+                Usuario usuario = DatabaseAcess.BuscarUsuarioPorEmail(email);
+                if(usuario != null)
                 {
-                    if(cliente.Senha == senha)
+                    if(usuario.Senha == senha)
                     {
-                        cliente.Senha = string.Empty;
+                        usuario.Senha = string.Empty;
                         var claims = new List<Claim>()
                         {
-                            new Claim("CPF", cliente.CPF),
-                            new Claim(ClaimTypes.Name, cliente.Nome)
+                            new Claim("ID", usuario.ID.ToString()),
+                            new Claim(ClaimTypes.Name, usuario.Nome)
                         };
 
                         ClaimsIdentity oAutIdentity = new ClaimsIdentity(claims, Startup.OAuthOptions.AuthenticationType);
@@ -43,7 +43,7 @@ namespace Market_WebAPI.Provider
                 }
                 else
                 {
-                    context.SetError("CPF Inválido", "Nenhum cliente encontrado com este CPF.");
+                    context.SetError("Email Inválido", "Nenhum usuário encontrado com este email.");
                 }
             });
         }
@@ -59,10 +59,10 @@ namespace Market_WebAPI.Provider
 
         public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
         {
-            string cpf = context.Identity.Claims.First().Value;
-            var dataFile = "c:\\temp\\" + cpf + ".txt";
+            string id = context.Identity.Claims.First().Value;
+            var dataFile = "c:\\temp\\" + id + ".txt";
             //var dataFile = "h:\\root\\home\\reciclado-001\\www\\reciclado\\" + cpf + ".txt";
-            TokenStore data = new TokenStore() { token = context.AccessToken, CPF = cpf};
+            TokenStore data = new TokenStore() { token = context.AccessToken, ID = id};
             File.WriteAllText(@dataFile, JsonConvert.SerializeObject(data));
             return base.TokenEndpointResponse(context);
         }

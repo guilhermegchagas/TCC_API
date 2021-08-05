@@ -12,6 +12,7 @@ namespace Market_WebAPI.Controllers
     [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
     public class CuponController : ApiController
     {
+        /*
         public List<Cupom> GetAvailableCupons()
         {
             try
@@ -64,5 +65,6 @@ namespace Market_WebAPI.Controllers
                 return "Falha ao resgatar cupom.";
             }
         }
+        */
     }
 }

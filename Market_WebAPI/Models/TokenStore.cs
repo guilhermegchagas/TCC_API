@@ -10,16 +10,16 @@ namespace Market_WebAPI.Models
     public class TokenStore
     {
         public string token { get; set; }
-        public string CPF { get; set; }
+        public string ID { get; set; }
 
         public static string GetShortToken(string Token)
         {
             return Token.Substring(0, 25);
         }
 
-        public static TokenStore GetTokenStore(string cpf)
+        public static TokenStore GetTokenStore(int id)
         {
-            var dataFile = "c:\\temp\\" + cpf + ".txt";
+            var dataFile = "c:\\temp\\" + id + ".txt";
             //var dataFile = "h:\\root\\home\\reciclado-001\\www\\reciclado\\" + cpf + ".txt";
             var data = File.ReadAllText(@dataFile);
             return JsonConvert.DeserializeObject<TokenStore>(data);

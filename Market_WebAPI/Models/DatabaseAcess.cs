@@ -13,19 +13,17 @@ namespace Market_WebAPI.Models
         private static string connectionString = @"Data Source=DESKTOP-3021GD2\MSSQLSERVER01;Initial Catalog=MarketAPI;Integrated Security=True";
         //private static string connectionString = @"Data Source=SQL5053.site4now.net;Initial Catalog=DB_A620FF_recicladoDBv2;User Id=DB_A620FF_recicladoDBv2_admin;Password=senha12345;";
 
-        public static void CadastrarCliente(Cliente cliente)
+        public static void CadastrarUsuario(Usuario usuario)
         {
-            string procedure = "in_Cliente_InserirClienteArg";
+            string procedure = "in_Usuario_InserirUsuario";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@cpf", cliente.CPF);
-                    comando.Parameters.AddWithValue("@email", cliente.Email);
-                    comando.Parameters.AddWithValue("@senha", cliente.Senha);
-                    comando.Parameters.AddWithValue("@nome", cliente.Nome);
-                    comando.Parameters.AddWithValue("@sobrenome", cliente.Sobrenome);
+                    comando.Parameters.AddWithValue("@email", usuario.Email);
+                    comando.Parameters.AddWithValue("@senha", usuario.Senha);
+                    comando.Parameters.AddWithValue("@nome", usuario.Nome);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                     conexao.Close();
@@ -34,37 +32,11 @@ namespace Market_WebAPI.Models
             }
         }
 
-        public static bool ValidarCPFCliente(string cpf)
-        {
-            bool ret = false;
-
-            string procedure = "sl_Cliente_SelectClientePorCPF";
-            using (SqlConnection conexao = new SqlConnection(connectionString))
-            {
-                using (SqlCommand comando = new SqlCommand(procedure, conexao))
-                {
-                    comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@cpf", cpf);
-                    conexao.Open();
-                    SqlDataReader reader = comando.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        ret = false;
-                    }
-                    else
-                    {
-                        ret = true;
-                    }
-                    conexao.Close();
-                }
-            }
-            return ret;
-        }
         public static bool ValidarEmailCliente(string email)
         {
             bool ret = false;
 
-            string procedure = "sl_Cliente_SelectClientePorEmail";
+            string procedure = "sl_Usuario_SelectUsuarioPorEmail";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
@@ -87,29 +59,56 @@ namespace Market_WebAPI.Models
             return ret;
         }
 
-        public static Cliente BuscarClientePorCPF(string cpf)
+        public static Usuario BuscarUsuarioPorID(int id)
         {
-            string procedure = "sl_Cliente_SelectClientePorCPF";
+            string procedure = "sl_Usuario_SelectUsuarioPorID";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@cpf", cpf);
+                    comando.Parameters.AddWithValue("@id", id);
                     conexao.Open();
                     SqlDataReader reader = comando.ExecuteReader();
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        Cliente cliente = new Cliente();
-                        cliente.CPF = reader["CPF"].ToString();
-                        cliente.Nome = reader["Nome"].ToString();
-                        cliente.Sobrenome = reader["Sobrenome"].ToString();
-                        cliente.Email = reader["Email"].ToString();
-                        cliente.Senha = reader["Senha"].ToString();
-                        cliente.Creditos = Convert.ToDouble(reader["Creditos"]);
+                        Usuario usuario = new Usuario();
+                        usuario.Nome = reader["Nome"].ToString();
+                        usuario.Email = reader["Email"].ToString();
+                        usuario.Senha = reader["Senha"].ToString();
                         conexao.Close();
-                        return cliente;
+                        return usuario;
+                    }
+                    else
+                    {
+                        conexao.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+
+        public static Usuario BuscarUsuarioPorEmail(string email)
+        {
+            string procedure = "sl_Usuario_SelectUsuarioPorEmail";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@email", email);
+                    conexao.Open();
+                    SqlDataReader reader = comando.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        Usuario usuario = new Usuario();
+                        usuario.Nome = reader["Nome"].ToString();
+                        usuario.Email = reader["Email"].ToString();
+                        usuario.Senha = reader["Senha"].ToString();
+                        conexao.Close();
+                        return usuario;
                     }
                     else
                     {
