@@ -15,22 +15,18 @@ namespace Market_WebAPI.Controllers
         // POST api/register
         public HttpResponseMessage PostCliente([FromBody]Usuario usuario)
         {
-            HttpResponseMessage response = null;
             try
             {
                 if (!DatabaseAcess.ValidarEmailCliente(usuario.Email))
                 {
-                    response = Request.CreateResponse(HttpStatusCode.Created, "Email já existe.");
-                    return response;
+                    return Request.CreateResponse(HttpStatusCode.Created, "Email já existe.");
                 }
                 DatabaseAcess.CadastrarUsuario(usuario);
-                response = Request.CreateResponse(HttpStatusCode.Created, "Usuário cadastrado.");
-                return response;
+                return Request.CreateResponse(HttpStatusCode.Created, "Usuário cadastrado.");
             }
             catch
             {
-                response = Request.CreateResponse(HttpStatusCode.Created,"Falha ao conectar com o banco.");
-                return response;
+                return Request.CreateResponse(HttpStatusCode.Created, "Falha ao conectar com o banco.");
             }
         }
     }

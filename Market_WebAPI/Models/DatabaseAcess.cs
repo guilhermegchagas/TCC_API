@@ -13,6 +13,7 @@ namespace Market_WebAPI.Models
         private static string connectionString = @"Data Source=DESKTOP-3021GD2\MSSQLSERVER01;Initial Catalog=MarketAPI;Integrated Security=True";
         //private static string connectionString = @"Data Source=SQL5053.site4now.net;Initial Catalog=DB_A620FF_recicladoDBv2;User Id=DB_A620FF_recicladoDBv2_admin;Password=senha12345;";
 
+        #region Usuario
         public static void CadastrarUsuario(Usuario usuario)
         {
             string procedure = "in_Usuario_InserirUsuario";
@@ -74,9 +75,10 @@ namespace Market_WebAPI.Models
                     {
                         reader.Read();
                         Usuario usuario = new Usuario();
-                        usuario.Nome = reader["Nome"].ToString();
+                        usuario.ID = id;
                         usuario.Email = reader["Email"].ToString();
                         usuario.Senha = reader["Senha"].ToString();
+                        usuario.Nome = reader["Nome"].ToString();
                         conexao.Close();
                         return usuario;
                     }
@@ -104,9 +106,10 @@ namespace Market_WebAPI.Models
                     {
                         reader.Read();
                         Usuario usuario = new Usuario();
-                        usuario.Nome = reader["Nome"].ToString();
-                        usuario.Email = reader["Email"].ToString();
+                        usuario.ID = Convert.ToInt32(reader["Codigo"]);
+                        usuario.Email = email;
                         usuario.Senha = reader["Senha"].ToString();
+                        usuario.Nome = reader["Nome"].ToString();
                         conexao.Close();
                         return usuario;
                     }
@@ -118,74 +121,47 @@ namespace Market_WebAPI.Models
                 }
             }
         }
+        #endregion
 
-        public static bool CadastrarReciclagem(string cpf, List<ItemReciclagem> listaItems)
+        #region Ponto
+        public static void CadastrarPonto(Ponto ponto)
         {
-            string procedure;
-            using (SqlConnection conexao = new SqlConnection(connectionString))
-            {
-                conexao.Open();
-                BeginTransaction(conexao);
-                try
-                {
-                    procedure = "in_Reciclagem_CadastrarReciclagem";
-                    using (SqlCommand comando = new SqlCommand(procedure, conexao))
-                    {
-                        comando.CommandType = CommandType.StoredProcedure;
-                        comando.Parameters.AddWithValue("@cpf", cpf);
-                        SqlParameter codigoRetornado = comando.Parameters.Add("@CodigoReciclagem", SqlDbType.Int);
-                        codigoRetornado.Direction = ParameterDirection.Output;
-                        comando.ExecuteNonQuery();
-                        int codigoReciclagem = Convert.ToInt32(codigoRetornado.Value);
-
-                        procedure = "in_ItemReciclagem_CadastrarItemReciclagem";
-                        foreach (ItemReciclagem item in listaItems)
-                        {
-                            using (SqlCommand comandoItem = new SqlCommand(procedure, conexao))
-                            {
-                                comandoItem.CommandType = CommandType.StoredProcedure;
-                                comandoItem.Parameters.AddWithValue("@cpf", cpf);
-                                comandoItem.Parameters.AddWithValue("@codigoQR", item.codigo_qr);
-                                comandoItem.Parameters.AddWithValue("@valorItem", item.vl_item_reciclagem);
-                                comandoItem.Parameters.AddWithValue("@codigoReciclagem", codigoReciclagem);
-                                comandoItem.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                    CommitTransaction(conexao);
-                    conexao.Close();
-                    return true;
-                }
-                catch
-                {
-                    RollbackTransaction(conexao);
-                    conexao.Close();
-                    return false;
-                }
-            }
-        }
-
-        public static ItemReciclagem CarregarItemReciclagem(string qr_code)
-        {
-            string procedure = "sl_CodigoQR_Produto_CarregarItemReciclagem";
+            string procedure = "in_Ponto_InserirPonto";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@codigo_qr", qr_code);
+                    comando.Parameters.AddWithValue("@email", ponto.Nome);
+                    comando.Parameters.AddWithValue("@codigoUsuario", ponto.CodigoUsuario);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static Ponto BuscarPontoPorCodigo(int codigo)
+        {
+            string procedure = "sl_Ponto_SelectPontosPorCodigoUsuario";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigo", codigo);
                     conexao.Open();
                     SqlDataReader reader = comando.ExecuteReader();
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        ItemReciclagem reciclavel = new ItemReciclagem();
-                        reciclavel.codigo_qr = qr_code;
-                        reciclavel.nome_produto = reader["NomeProduto"].ToString();
-                        reciclavel.codigo_barra_produto = reader["CodigoBarra"].ToString();
-                        reciclavel.vl_item_reciclagem = Convert.ToDouble(reader["ValorReciclagem"].ToString());
+                        Ponto ponto = new Ponto();
+                        ponto.Codigo = codigo;
+                        ponto.Nome = reader["Nome"].ToString();
+                        ponto.CodigoUsuario = Convert.ToInt32(reader["CodigoUsuario"]);
                         conexao.Close();
-                        return reciclavel;
+                        return ponto;
                     }
                     else
                     {
@@ -196,68 +172,30 @@ namespace Market_WebAPI.Models
             }
         }
 
-        public static List<Cupom> BuscarCuponsDisponiveis()
+        public static List<Ponto> BuscarPontosPorCodigoUsuario(int codigoUsuario)
         {
-            string procedure = "sl_Cupom_CarregarCuponsDisponiveis";
+            string procedure = "sl_Ponto_SelectPontosPorCodigoUsuario";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoUsuario", codigoUsuario);
                     conexao.Open();
                     SqlDataReader reader = comando.ExecuteReader();
                     if (reader.HasRows)
                     {
-                        List<Cupom> cuponsDisponiveis = new List<Cupom>();
-                        while(reader.Read())
-                        {
-                            Cupom cupom = new Cupom();
-                            cupom.Codigo = Convert.ToInt32(reader["Codigo"]);
-                            cupom.Nome = reader["Nome"].ToString();
-                            cupom.Descricao = reader["Descricao"].ToString();
-                            cupom.Vencimento = reader["Vencimento"].ToString();
-                            cupom.CustoCreditos = Convert.ToDouble(reader["CustoCreditos"]);
-                            cupom.CorHex = reader["CorHex"].ToString();
-                            cuponsDisponiveis.Add(cupom);
-                        }
-                        conexao.Close();
-                        return cuponsDisponiveis;
-                    }
-                    else
-                    {
-                        conexao.Close();
-                        return null;
-                    }
-                }
-            }
-        }
-
-        public static List<CupomResgatado> BuscarMeusCupons(string cpf)
-        {
-            string procedure = "sl_Cupom_CarregarMeusCupons";
-            using (SqlConnection conexao = new SqlConnection(connectionString))
-            {
-                using (SqlCommand comando = new SqlCommand(procedure, conexao))
-                {
-                    comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@cpf", cpf);
-                    conexao.Open();
-                    SqlDataReader reader = comando.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        List<CupomResgatado> meusCupons = new List<CupomResgatado>();
+                        List<Ponto> pontos = new List<Ponto>();
                         while (reader.Read())
                         {
-                            CupomResgatado cupom = new CupomResgatado();
-                            cupom.Codigo = reader["Codigo"].ToString();
-                            cupom.Nome = reader["Nome"].ToString();
-                            cupom.Descricao = reader["Descricao"].ToString();
-                            cupom.Vencimento = reader["Vencimento"].ToString();
-                            cupom.CorHex = reader["CorHex"].ToString();
-                            meusCupons.Add(cupom);
+                            Ponto ponto = new Ponto();
+                            ponto.Codigo = Convert.ToInt32(reader["Codigo"]);
+                            ponto.Nome = reader["Nome"].ToString();
+                            ponto.CodigoUsuario = codigoUsuario;
+                            pontos.Add(ponto);
                         }
                         conexao.Close();
-                        return meusCupons;
+                        return pontos;
                     }
                     else
                     {
@@ -267,33 +205,71 @@ namespace Market_WebAPI.Models
                 }
             }
         }
+        #endregion
 
-        public static bool ResgatarCupom(string cpf, string codigo_cupom)
+        #region Medicao
+        public static void CadastrarMedicao(Medicao medicao)
         {
-            string procedure;
+            string procedure = "in_Medicao_InserirMedicao";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
-                conexao.Open();
-                try
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
-                    procedure = "in_CupomResgatado_ResgatarCupom";
-                    using (SqlCommand comando = new SqlCommand(procedure, conexao))
-                    {
-                        comando.CommandType = CommandType.StoredProcedure;
-                        comando.Parameters.AddWithValue("@cpf", cpf);
-                        comando.Parameters.AddWithValue("@codigo_cupom", codigo_cupom);
-                        comando.ExecuteNonQuery();
-                    }
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@horario", medicao.Horario);
+                    comando.Parameters.AddWithValue("@potencia", medicao.Potencia);
+                    comando.Parameters.AddWithValue("@codigoPonto", medicao.CodigoPonto);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
                     conexao.Close();
-                    return true;
-                }
-                catch
-                {
-                    conexao.Close();
-                    return false;
+                    return;
                 }
             }
         }
+
+        public static List<Medicao> BuscarMedicao(int codigoPonto, 
+            DateTime? horarioInicial = null,
+            DateTime? horarioFinal = null,
+            double? potenciaInicial = null,
+            double? potenciaFinal = null)
+        {
+            string procedure = "sl_Medicao_SelectMedicaoComTodosParametros";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoPonto", codigoPonto);
+                    if(horarioInicial.HasValue) comando.Parameters.AddWithValue("@horarioInicial", horarioInicial.Value);
+                    if(horarioFinal.HasValue) comando.Parameters.AddWithValue("@horarioFinal", horarioFinal.Value);
+                    if(potenciaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaInicial", potenciaInicial.Value);
+                    if(potenciaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaFinal", potenciaFinal.Value);
+                    conexao.Open();
+                    SqlDataReader reader = comando.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<Medicao> medicoes = new List<Medicao>();
+                        while (reader.Read())
+                        {
+                            Medicao medicao = new Medicao();
+                            medicao.Codigo = Convert.ToInt32(reader["Codigo"]);
+                            medicao.Horario = Convert.ToDateTime(reader["Horario"]);
+                            medicao.Potencia = Convert.ToDouble(reader["Potencia"]);
+                            medicao.CodigoPonto = codigoPonto;
+                            medicoes.Add(medicao);
+                        }
+                        conexao.Close();
+                        return medicoes;
+                    }
+                    else
+                    {
+                        conexao.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+        #endregion
 
         #region Transaction
         private static void BeginTransaction(SqlConnection conexao)

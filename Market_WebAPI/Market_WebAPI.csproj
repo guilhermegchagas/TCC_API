@@ -221,8 +221,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
-    <Compile Include="Controllers\CuponController.cs" />
-    <Compile Include="Controllers\QRReaderController.cs" />
+    <Compile Include="Controllers\PontoController.cs" />
+    <Compile Include="Controllers\MedicaoController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Extensions\OwinContextExtentions.cs" />
@@ -230,11 +230,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CarrinhoReciclagem.cs" />
+    <Compile Include="Models\Medicao.cs" />
+    <Compile Include="Models\Ponto.cs" />
     <Compile Include="Models\Usuario.cs" />
-    <Compile Include="Models\Cupom.cs" />
-    <Compile Include="Models\CupomResgatado.cs" />
     <Compile Include="Models\DatabaseAcess.cs" />
-    <Compile Include="Models\ItemReciclagem.cs" />
     <Compile Include="Models\ReciclagemSocket.cs" />
     <Compile Include="Models\TokenStore.cs" />
     <Compile Include="Models\WebSocketProgram.cs" />
