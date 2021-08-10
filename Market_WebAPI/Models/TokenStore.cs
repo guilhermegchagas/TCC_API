@@ -12,11 +12,6 @@ namespace Market_WebAPI.Models
         public string token { get; set; }
         public string ID { get; set; }
 
-        public static string GetShortToken(string Token)
-        {
-            return Token.Substring(0, 25);
-        }
-
         public static TokenStore GetTokenStore(int id)
         {
             var dataFile = "c:\\temp\\" + id + ".txt";

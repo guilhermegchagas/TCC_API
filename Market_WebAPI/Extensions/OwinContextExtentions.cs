@@ -11,7 +11,7 @@ namespace Market_WebAPI.Extensions
         public static string GetCPF(this IOwinContext ctx)
         {
             var result = "-1";
-            var claim = ctx.Authentication.User.Claims.FirstOrDefault(c => c.Type == "CPF");
+            var claim = ctx.Authentication.User.Claims.FirstOrDefault(c => c.Type == "ID");
             if (claim != null)
             {
                 result = claim.Value;

@@ -234,9 +234,7 @@
     <Compile Include="Models\Ponto.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\DatabaseAcess.cs" />
-    <Compile Include="Models\ReciclagemSocket.cs" />
     <Compile Include="Models\TokenStore.cs" />
-    <Compile Include="Models\WebSocketProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\OAuthAppProvider.cs" />
     <Compile Include="Startup.cs" />
