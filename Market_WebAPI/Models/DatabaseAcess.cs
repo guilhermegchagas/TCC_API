@@ -10,7 +10,7 @@ namespace Market_WebAPI.Models
 {
     public static class DatabaseAcess
     {
-        private static string connectionString = @"Data Source=DESKTOP-3021GD2\MSSQLSERVER01;Initial Catalog=MarketAPI;Integrated Security=True";
+        private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
         //private static string connectionString = @"Data Source=SQL5053.site4now.net;Initial Catalog=DB_A620FF_recicladoDBv2;User Id=DB_A620FF_recicladoDBv2_admin;Password=senha12345;";
 
         #region Usuario
@@ -132,7 +132,7 @@ namespace Market_WebAPI.Models
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@email", ponto.Nome);
+                    comando.Parameters.AddWithValue("@nome", ponto.Nome);
                     comando.Parameters.AddWithValue("@codigoUsuario", ponto.CodigoUsuario);
                     conexao.Open();
                     comando.ExecuteNonQuery();
@@ -144,7 +144,7 @@ namespace Market_WebAPI.Models
 
         public static Ponto BuscarPontoPorCodigo(int codigo)
         {
-            string procedure = "sl_Ponto_SelectPontosPorCodigoUsuario";
+            string procedure = "sl_Ponto_SelectPontoPorCodigo";
             using (SqlConnection conexao = new SqlConnection(connectionString))
             {
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))

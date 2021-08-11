@@ -23,7 +23,7 @@ namespace Market_WebAPI.Controllers
                     DatabaseAcess.CadastrarPonto(ponto);
                     return Request.CreateResponse(HttpStatusCode.Created, "Ponto cadastrado.");
                 }
-                return null;
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
             }
             catch
             {

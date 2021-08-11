@@ -17,14 +17,18 @@ namespace Market_WebAPI.Controllers
             try
             {
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                int codigoUsuario = DatabaseAcess.BuscarPontoPorCodigo(medicao.CodigoPonto).CodigoUsuario;
-                TokenStore tokenStore = TokenStore.GetTokenStore(codigoUsuario);
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(medicao.CodigoPonto);
+                if (ponto == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ponto de medição não existe.");
+                }
+                TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
                     DatabaseAcess.CadastrarMedicao(medicao);
                     return Request.CreateResponse(HttpStatusCode.Created, "Medição cadastrada.");
                 }
-                return null;
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
             }
             catch
             {
@@ -41,8 +45,12 @@ namespace Market_WebAPI.Controllers
             try
             {
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                int codigoUsuario = DatabaseAcess.BuscarPontoPorCodigo(codigoPonto).CodigoUsuario;
-                TokenStore tokenStore = TokenStore.GetTokenStore(codigoUsuario);
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(codigoPonto);
+                if(ponto == null)
+                {
+                    return null;
+                }
+                TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
                     return DatabaseAcess.BuscarMedicao(codigoPonto, horarioInicial, horarioFinal, potenciaInicial, potenciaFinal);
