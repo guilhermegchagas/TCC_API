@@ -10,6 +10,14 @@ using System.Web.Http.Cors;
 namespace Market_WebAPI.Controllers
 {
     [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
+
+    public class RegisterPontoData
+    {
+        public string Nome { get; set; }
+        public string Descricao { get; set; }
+        public string CodigoUsuario { get; set; }
+    }
+
     public class PontoController : ApiController
     {
         public HttpResponseMessage PostPonto([FromBody]Ponto ponto)

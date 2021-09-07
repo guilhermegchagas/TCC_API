@@ -14,15 +14,15 @@ namespace Market_WebAPI.Controllers
     [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
     public class UsuarioController : ApiController
     {
-        public Usuario GetUsuarioInfo(int id)
+        public Usuario GetUsuarioInfo(string email)
         {
             try
             {
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                TokenStore tokenStore = TokenStore.GetTokenStore(id);
+                Usuario usuario = DatabaseAcess.BuscarUsuarioPorEmail(email);
+                TokenStore tokenStore = TokenStore.GetTokenStore(usuario.ID);
                 if (tokenStore.token == token)
                 {
-                    Usuario usuario = DatabaseAcess.BuscarUsuarioPorID(id);
                     usuario.Senha = string.Empty;
                     return usuario;
                 }

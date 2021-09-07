@@ -134,6 +134,7 @@ namespace Market_WebAPI.Models
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@nome", ponto.Nome);
                     comando.Parameters.AddWithValue("@codigoUsuario", ponto.CodigoUsuario);
+                    comando.Parameters.AddWithValue("@descricao", ponto.Descricao);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                     conexao.Close();
@@ -159,6 +160,7 @@ namespace Market_WebAPI.Models
                         Ponto ponto = new Ponto();
                         ponto.Codigo = codigo;
                         ponto.Nome = reader["Nome"].ToString();
+                        ponto.Descricao = reader["Descricao"].ToString();
                         ponto.CodigoUsuario = Convert.ToInt32(reader["CodigoUsuario"]);
                         conexao.Close();
                         return ponto;
@@ -191,6 +193,7 @@ namespace Market_WebAPI.Models
                             Ponto ponto = new Ponto();
                             ponto.Codigo = Convert.ToInt32(reader["Codigo"]);
                             ponto.Nome = reader["Nome"].ToString();
+                            ponto.Descricao = reader["Descricao"].ToString();
                             ponto.CodigoUsuario = codigoUsuario;
                             pontos.Add(ponto);
                         }
