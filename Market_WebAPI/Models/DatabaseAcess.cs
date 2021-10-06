@@ -152,7 +152,7 @@ namespace Market_WebAPI.Models
                 {
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@nome", ponto.Nome);
-                    comando.Parameters.AddWithValue("@codigoUsuario", ponto.CodigoUsuario);
+                    comando.Parameters.AddWithValue("@codigoPonto", ponto.Codigo);
                     comando.Parameters.AddWithValue("@descricao", ponto.Descricao);
                     conexao.Open();
                     comando.ExecuteNonQuery();
