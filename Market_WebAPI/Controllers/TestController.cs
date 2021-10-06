@@ -10,7 +10,6 @@ namespace Market_WebAPI.Controllers
 {
     public class TestController : ApiController
     {
-        [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
         public string Get()
         {
             return "OK";

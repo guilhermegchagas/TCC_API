@@ -11,7 +11,6 @@ using System.Web.Http.Cors;
 
 namespace Market_WebAPI.Controllers
 {
-    [EnableCors(origins: "http://reciclado-001-site1.etempurl.com", headers: "*", methods: "*")]
     public class UsuarioController : ApiController
     {
         public Usuario GetUsuarioInfo(string email)

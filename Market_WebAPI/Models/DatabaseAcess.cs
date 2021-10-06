@@ -10,8 +10,8 @@ namespace Market_WebAPI.Models
 {
     public static class DatabaseAcess
     {
-        private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
-        //private static string connectionString = @"Data Source=SQL5053.site4now.net;Initial Catalog=DB_A620FF_recicladoDBv2;User Id=DB_A620FF_recicladoDBv2_admin;Password=senha12345;";
+        //private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
+        private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
 
         #region Usuario
         public static void CadastrarUsuario(Usuario usuario)
@@ -143,6 +143,42 @@ namespace Market_WebAPI.Models
             }
         }
 
+        public static void AtualizarPonto(Ponto ponto)
+        {
+            string procedure = "up_Ponto_UpdatePonto";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@nome", ponto.Nome);
+                    comando.Parameters.AddWithValue("@codigoUsuario", ponto.CodigoUsuario);
+                    comando.Parameters.AddWithValue("@descricao", ponto.Descricao);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static void DeletarPonto(Ponto ponto)
+        {
+            string procedure = "del_Ponto_DeletePonto";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoPonto", ponto.Codigo);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
         public static Ponto BuscarPontoPorCodigo(int codigo)
         {
             string procedure = "sl_Ponto_SelectPontoPorCodigo";
@@ -220,7 +256,13 @@ namespace Market_WebAPI.Models
                 {
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@horario", medicao.Horario);
-                    comando.Parameters.AddWithValue("@potencia", medicao.Potencia);
+                    comando.Parameters.AddWithValue("@potenciaTotal", medicao.PotenciaTotal);
+                    comando.Parameters.AddWithValue("@potenciaAtiva", medicao.PotenciaAtiva);
+                    comando.Parameters.AddWithValue("@potenciaReativa", medicao.PotenciaReativa);
+                    comando.Parameters.AddWithValue("@fatorPotencia", medicao.FatorPotencia);
+                    comando.Parameters.AddWithValue("@corrente", medicao.Corrente);
+                    comando.Parameters.AddWithValue("@tensao", medicao.Tensao);
+                    comando.Parameters.AddWithValue("@frequencia", medicao.Frequencia);
                     comando.Parameters.AddWithValue("@codigoPonto", medicao.CodigoPonto);
                     conexao.Open();
                     comando.ExecuteNonQuery();
@@ -233,8 +275,20 @@ namespace Market_WebAPI.Models
         public static List<Medicao> BuscarMedicao(int codigoPonto, 
             DateTime? horarioInicial = null,
             DateTime? horarioFinal = null,
-            double? potenciaInicial = null,
-            double? potenciaFinal = null)
+            double? potenciaTotalInicial = null,
+            double? potenciaTotalFinal = null,
+            double? potenciaAtivaInicial = null,
+            double? potenciaAtivaFinal = null,
+            double? potenciaReativaInicial = null,
+            double? potenciaReativaFinal = null,
+            double? fatorPotenciaInicial = null,
+            double? fatorPotenciaFinal = null,
+            double? correnteInicial = null,
+            double? correnteFinal = null,
+            double? tensaoInicial = null,
+            double? tensaoFinal = null,
+            double? frequenciaInicial = null,
+            double? frequenciaFinal = null)
         {
             string procedure = "sl_Medicao_SelectMedicaoComTodosParametros";
             using (SqlConnection conexao = new SqlConnection(connectionString))
@@ -243,10 +297,22 @@ namespace Market_WebAPI.Models
                 {
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@codigoPonto", codigoPonto);
-                    if(horarioInicial.HasValue) comando.Parameters.AddWithValue("@horarioInicial", horarioInicial.Value);
-                    if(horarioFinal.HasValue) comando.Parameters.AddWithValue("@horarioFinal", horarioFinal.Value);
-                    if(potenciaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaInicial", potenciaInicial.Value);
-                    if(potenciaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaFinal", potenciaFinal.Value);
+                    if (horarioInicial.HasValue) comando.Parameters.AddWithValue("@horarioInicial", horarioInicial.Value);
+                    if (horarioFinal.HasValue) comando.Parameters.AddWithValue("@horarioFinal", horarioFinal.Value);
+                    if (potenciaTotalInicial.HasValue) comando.Parameters.AddWithValue("@potenciaTotalInicial", potenciaTotalInicial.Value);
+                    if (potenciaTotalFinal.HasValue) comando.Parameters.AddWithValue("@potenciaTotalFinal", potenciaTotalFinal.Value);
+                    if (potenciaAtivaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaAtivaInicial", potenciaAtivaInicial.Value);
+                    if (potenciaAtivaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaAtivaFinal", potenciaAtivaFinal.Value);
+                    if (potenciaReativaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaReativaInicial", potenciaReativaInicial.Value);
+                    if (potenciaReativaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaReativaFinal", potenciaReativaFinal.Value);
+                    if (fatorPotenciaInicial.HasValue) comando.Parameters.AddWithValue("@fatorPotenciaInicial", fatorPotenciaInicial.Value);
+                    if (fatorPotenciaFinal.HasValue) comando.Parameters.AddWithValue("@fatorPotenciaFinal", fatorPotenciaFinal.Value);
+                    if (correnteInicial.HasValue) comando.Parameters.AddWithValue("@correnteInicial", correnteInicial.Value);
+                    if (correnteFinal.HasValue) comando.Parameters.AddWithValue("@correnteFinal", correnteFinal.Value);
+                    if (tensaoInicial.HasValue) comando.Parameters.AddWithValue("@tensaoInicial", tensaoInicial.Value);
+                    if (tensaoFinal.HasValue) comando.Parameters.AddWithValue("@tensaoFinal", tensaoFinal.Value);
+                    if (frequenciaInicial.HasValue) comando.Parameters.AddWithValue("@frequenciaInicial", frequenciaInicial.Value);
+                    if (frequenciaFinal.HasValue) comando.Parameters.AddWithValue("@frequenciaFinal", frequenciaFinal.Value);
                     conexao.Open();
                     SqlDataReader reader = comando.ExecuteReader();
                     if (reader.HasRows)
@@ -257,7 +323,13 @@ namespace Market_WebAPI.Models
                             Medicao medicao = new Medicao();
                             medicao.Codigo = Convert.ToInt32(reader["Codigo"]);
                             medicao.Horario = Convert.ToDateTime(reader["Horario"]);
-                            medicao.Potencia = Convert.ToDouble(reader["Potencia"]);
+                            medicao.PotenciaTotal = Convert.ToDouble(reader["PotenciaTotal"]);
+                            medicao.PotenciaAtiva = Convert.ToDouble(reader["PotenciaAtiva"]);
+                            medicao.PotenciaReativa = Convert.ToDouble(reader["PotenciaReativa"]);
+                            medicao.FatorPotencia = Convert.ToDouble(reader["FatorPotencia"]);
+                            medicao.Corrente = Convert.ToDouble(reader["Corrente"]);
+                            medicao.Tensao = Convert.ToDouble(reader["Tensao"]);
+                            medicao.Frequencia = Convert.ToDouble(reader["Frequencia"]);
                             medicao.CodigoPonto = codigoPonto;
                             medicoes.Add(medicao);
                         }
