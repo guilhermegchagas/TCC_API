@@ -221,6 +221,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AlarmeController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\PontoController.cs" />
     <Compile Include="Controllers\MedicaoController.cs" />
@@ -231,6 +232,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Medicao.cs" />
+    <Compile Include="Models\Alarme.cs" />
     <Compile Include="Models\Ponto.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\DatabaseAcess.cs" />

@@ -9,19 +9,24 @@ using System.Web.Http.Cors;
 
 namespace Market_WebAPI.Controllers
 {
-    public class PontoController : ApiController
+    public class AlarmeController : ApiController
     {
-        [Route("api/ponto/cadastrar")]
-        public HttpResponseMessage PostPonto([FromBody]Ponto ponto)
+        [Route("api/alarme/cadastrar")]
+        public HttpResponseMessage PostAlarme([FromBody]Alarme alarme)
         {
             try
             {
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(alarme.CodigoPonto);
+                if (ponto == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ponto de medição não existe.");
+                }
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
                 TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
-                    DatabaseAcess.CadastrarPonto(ponto);
-                    return Request.CreateResponse(HttpStatusCode.Created, "Ponto cadastrado.");
+                    DatabaseAcess.CadastrarAlarme(alarme);
+                    return Request.CreateResponse(HttpStatusCode.Created, "Alarme cadastrado.");
                 }
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
             }
@@ -30,17 +35,22 @@ namespace Market_WebAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Falha ao conectar com o banco.");
             }
         }
-        [Route("api/ponto/atualizar")]
-        public HttpResponseMessage PutPonto([FromBody]Ponto ponto)
+        [Route("api/alarme/atualizar")]
+        public HttpResponseMessage PutAlarme([FromBody]Alarme alarme)
         {
             try
             {
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(alarme.CodigoPonto);
+                if (ponto == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ponto de medição não existe.");
+                }
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
                 TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
-                    DatabaseAcess.AtualizarPonto(ponto);
-                    return Request.CreateResponse(HttpStatusCode.Created, "Ponto atualizado.");
+                    DatabaseAcess.AtualizarAlarme(alarme);
+                    return Request.CreateResponse(HttpStatusCode.Created, "Alarme atualizado.");
                 }
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
             }
@@ -49,17 +59,22 @@ namespace Market_WebAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Falha ao conectar com o banco.");
             }
         }
-        [Route("api/ponto/deletar")]
-        public HttpResponseMessage DeletePonto([FromBody]Ponto ponto)
+        [Route("api/alarme/deletar")]
+        public HttpResponseMessage DeletePonto([FromBody]Alarme alarme)
         {
             try
             {
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(alarme.CodigoPonto);
+                if (ponto == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Ponto de medição não existe.");
+                }
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
                 TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
-                    DatabaseAcess.DeletarPonto(ponto);
-                    return Request.CreateResponse(HttpStatusCode.Created, "Ponto deletado.");
+                    DatabaseAcess.DeletarAlarme(alarme);
+                    return Request.CreateResponse(HttpStatusCode.Created, "Alarme deletado.");
                 }
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
             }
@@ -69,15 +84,20 @@ namespace Market_WebAPI.Controllers
             }
         }
 
-        public List<Ponto> GetPontosPorCodigoUsuario(int codigoUsuario)
+        public List<Alarme> GetAlarmesPorPonto(int codigoPonto)
         {
             try
             {
+                Ponto ponto = DatabaseAcess.BuscarPontoPorCodigo(codigoPonto);
+                if (ponto == null)
+                {
+                    return null;
+                }
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                TokenStore tokenStore = TokenStore.GetTokenStore(codigoUsuario);
+                TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
                 if (tokenStore.token == token)
                 {
-                    return DatabaseAcess.BuscarPontosPorCodigoUsuario(codigoUsuario);
+                    return DatabaseAcess.BuscarAlarmesPorPonto(codigoPonto);
                 }
                 return null;
             }

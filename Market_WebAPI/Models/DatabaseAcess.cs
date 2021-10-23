@@ -10,8 +10,8 @@ namespace Market_WebAPI.Models
 {
     public static class DatabaseAcess
     {
-        //private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
-        private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
+        private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
+        //private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
 
         #region Usuario
         public static void CadastrarUsuario(Usuario usuario)
@@ -335,6 +335,105 @@ namespace Market_WebAPI.Models
                         }
                         conexao.Close();
                         return medicoes;
+                    }
+                    else
+                    {
+                        conexao.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Alarme
+        public static void CadastrarAlarme(Alarme alarme)
+        {
+            string procedure = "in_Alarme_InserirAlarme";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@nome", alarme.Nome);
+                    comando.Parameters.AddWithValue("@descricao", alarme.Descricao);
+                    comando.Parameters.AddWithValue("@tipoCondicao", alarme.TipoCondicao);
+                    comando.Parameters.AddWithValue("@tipoMedicao", alarme.TipoMedicao);
+                    comando.Parameters.AddWithValue("@codigoPonto", alarme.CodigoPonto);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static void AtualizarAlarme(Alarme alarme)
+        {
+            string procedure = "up_Alarme_UpdateAlarme";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoAlarme", alarme.Codigo);
+                    comando.Parameters.AddWithValue("@nome", alarme.Nome);
+                    comando.Parameters.AddWithValue("@descricao", alarme.Descricao);
+                    comando.Parameters.AddWithValue("@tipoCondicao", alarme.TipoCondicao);
+                    comando.Parameters.AddWithValue("@tipoMedicao", alarme.TipoMedicao);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static void DeletarAlarme(Alarme alarme)
+        {
+            string procedure = "del_Alarme_DeleteAlarme";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoAlarme", alarme.Codigo);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static List<Alarme> BuscarAlarmesPorPonto(int codigoPonto)
+        {
+            string procedure = "sl_Alarme_SelectAlarmePorPonto";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoPonto", codigoPonto);
+                    conexao.Open();
+                    SqlDataReader reader = comando.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<Alarme> alarmes = new List<Alarme>();
+                        while (reader.Read())
+                        {
+                            Alarme alarme = new Alarme();
+                            alarme.Codigo = Convert.ToInt32(reader["Codigo"]);
+                            alarme.Nome = reader["Nome"].ToString();
+                            alarme.Descricao = reader["Descricao"].ToString();
+                            alarme.TipoCondicao = Convert.ToInt32(reader["TipoCondicao"]);
+                            alarme.TipoMedicao = Convert.ToInt32(reader["TipoMedicao"]);
+                            alarme.HorarioAtualizacao = Convert.ToDateTime(reader["HorarioAtualizacao"]);
+                            alarme.CodigoPonto = codigoPonto;
+                            alarmes.Add(alarme);
+                        }
+                        conexao.Close();
+                        return alarmes;
                     }
                     else
                     {
