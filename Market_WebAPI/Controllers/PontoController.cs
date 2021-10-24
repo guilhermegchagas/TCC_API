@@ -50,15 +50,15 @@ namespace Market_WebAPI.Controllers
             }
         }
         [Route("api/ponto/deletar")]
-        public HttpResponseMessage DeletePonto([FromBody]Ponto ponto)
+        public HttpResponseMessage DeletePonto(int codigoUsuario, int codigoPonto)
         {
             try
             {
                 string token = ActionContext.Request.Headers.Authorization.Parameter;
-                TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
+                TokenStore tokenStore = TokenStore.GetTokenStore(codigoUsuario);
                 if (tokenStore.token == token)
                 {
-                    DatabaseAcess.DeletarPonto(ponto);
+                    DatabaseAcess.DeletarPonto(codigoPonto);
                     return Request.CreateResponse(HttpStatusCode.Created, "Ponto deletado.");
                 }
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");

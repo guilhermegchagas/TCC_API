@@ -162,7 +162,7 @@ namespace Market_WebAPI.Models
             }
         }
 
-        public static void DeletarPonto(Ponto ponto)
+        public static void DeletarPonto(int codigoPonto)
         {
             string procedure = "del_Ponto_DeletePonto";
             using (SqlConnection conexao = new SqlConnection(connectionString))
@@ -170,7 +170,7 @@ namespace Market_WebAPI.Models
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@codigoPonto", ponto.Codigo);
+                    comando.Parameters.AddWithValue("@codigoPonto", codigoPonto);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                     conexao.Close();
@@ -359,6 +359,7 @@ namespace Market_WebAPI.Models
                     comando.Parameters.AddWithValue("@descricao", alarme.Descricao);
                     comando.Parameters.AddWithValue("@tipoCondicao", alarme.TipoCondicao);
                     comando.Parameters.AddWithValue("@tipoMedicao", alarme.TipoMedicao);
+                    comando.Parameters.AddWithValue("@valorCondicao", alarme.ValorCondicao);
                     comando.Parameters.AddWithValue("@codigoPonto", alarme.CodigoPonto);
                     conexao.Open();
                     comando.ExecuteNonQuery();
@@ -381,6 +382,7 @@ namespace Market_WebAPI.Models
                     comando.Parameters.AddWithValue("@descricao", alarme.Descricao);
                     comando.Parameters.AddWithValue("@tipoCondicao", alarme.TipoCondicao);
                     comando.Parameters.AddWithValue("@tipoMedicao", alarme.TipoMedicao);
+                    comando.Parameters.AddWithValue("@valorCondicao", alarme.ValorCondicao);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                     conexao.Close();
@@ -389,7 +391,7 @@ namespace Market_WebAPI.Models
             }
         }
 
-        public static void DeletarAlarme(Alarme alarme)
+        public static void DeletarAlarme(int codigo)
         {
             string procedure = "del_Alarme_DeleteAlarme";
             using (SqlConnection conexao = new SqlConnection(connectionString))
@@ -397,7 +399,7 @@ namespace Market_WebAPI.Models
                 using (SqlCommand comando = new SqlCommand(procedure, conexao))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@codigoAlarme", alarme.Codigo);
+                    comando.Parameters.AddWithValue("@codigoAlarme", codigo);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                     conexao.Close();
@@ -428,12 +430,109 @@ namespace Market_WebAPI.Models
                             alarme.Descricao = reader["Descricao"].ToString();
                             alarme.TipoCondicao = Convert.ToInt32(reader["TipoCondicao"]);
                             alarme.TipoMedicao = Convert.ToInt32(reader["TipoMedicao"]);
+                            alarme.ValorCondicao = Convert.ToInt32(reader["ValorCondicao"]);
                             alarme.HorarioAtualizacao = Convert.ToDateTime(reader["HorarioAtualizacao"]);
                             alarme.CodigoPonto = codigoPonto;
                             alarmes.Add(alarme);
                         }
                         conexao.Close();
                         return alarmes;
+                    }
+                    else
+                    {
+                        conexao.Close();
+                        return null;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Notificacao
+        public static void CadastrarNotificacao(Notificacao notificacao)
+        {
+            string procedure = "in_Notificacao_InserirNotificacao";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@nome", notificacao.Nome);
+                    comando.Parameters.AddWithValue("@descricao", notificacao.Descricao);
+                    comando.Parameters.AddWithValue("@tipo", notificacao.Tipo);
+                    comando.Parameters.AddWithValue("@codigoPonto", notificacao.CodigoPonto);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static void DeletarNotificacao(int codigo)
+        {
+            string procedure = "del_Notificacao_DeleteNotificacao";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoNotificacao", codigo);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static void LimparNotificacao(DateTime? horarioInicial = null, DateTime? horarioFinal = null)
+        {
+            string procedure = "del_Notificacao_LimparNotificacao";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@horarioInicial", horarioInicial);
+                    comando.Parameters.AddWithValue("@horarioFinal", horarioFinal);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
+        public static List<Notificacao> BuscarNotificacoesPorPonto(int codigoPonto, DateTime? horarioInicial = null, DateTime? horarioFinal = null)
+        {
+            string procedure = "sl_Notificacao_SelectNotificacaoPorPonto";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoPonto", codigoPonto);
+                    comando.Parameters.AddWithValue("@horarioInicial", horarioInicial);
+                    comando.Parameters.AddWithValue("@horarioFinal", horarioFinal);
+                    conexao.Open();
+                    SqlDataReader reader = comando.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        List<Notificacao> notificacoes = new List<Notificacao>();
+                        while (reader.Read())
+                        {
+                            Notificacao notificacao = new Notificacao();
+                            notificacao.Codigo = Convert.ToInt32(reader["Codigo"]);
+                            notificacao.Nome = reader["Nome"].ToString();
+                            notificacao.Descricao = reader["Descricao"].ToString();
+                            notificacao.Tipo = Convert.ToInt32(reader["Tipo"]);
+                            notificacao.Horario = Convert.ToDateTime(reader["Horario"]);
+                            notificacao.CodigoPonto = codigoPonto;
+                            notificacoes.Add(notificacao);
+                        }
+                        conexao.Close();
+                        return notificacoes;
                     }
                     else
                     {

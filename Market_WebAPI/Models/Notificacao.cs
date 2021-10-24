@@ -5,15 +5,13 @@ using System.Web;
 
 namespace Market_WebAPI.Models
 {
-    public class Alarme
+    public class Notificacao
     {
         public int Codigo { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public int TipoCondicao { get; set; }
-        public int TipoMedicao { get; set; }
-        public double ValorCondicao { get; set; }
-        public DateTime HorarioAtualizacao { get; set; }
+        public int Tipo { get; set; }
+        public DateTime Horario { get; set; }
         public int CodigoPonto { get; set; }
     }
 }
