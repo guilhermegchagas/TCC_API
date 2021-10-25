@@ -257,7 +257,6 @@ namespace Market_WebAPI.Models
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@horario", medicao.Horario);
                     comando.Parameters.AddWithValue("@potenciaTotal", medicao.PotenciaTotal);
-                    comando.Parameters.AddWithValue("@potenciaAtiva", medicao.PotenciaAtiva);
                     comando.Parameters.AddWithValue("@potenciaReativa", medicao.PotenciaReativa);
                     comando.Parameters.AddWithValue("@fatorPotencia", medicao.FatorPotencia);
                     comando.Parameters.AddWithValue("@corrente", medicao.Corrente);
@@ -277,8 +276,6 @@ namespace Market_WebAPI.Models
             DateTime? horarioFinal = null,
             double? potenciaTotalInicial = null,
             double? potenciaTotalFinal = null,
-            double? potenciaAtivaInicial = null,
-            double? potenciaAtivaFinal = null,
             double? potenciaReativaInicial = null,
             double? potenciaReativaFinal = null,
             double? fatorPotenciaInicial = null,
@@ -301,8 +298,6 @@ namespace Market_WebAPI.Models
                     if (horarioFinal.HasValue) comando.Parameters.AddWithValue("@horarioFinal", horarioFinal.Value);
                     if (potenciaTotalInicial.HasValue) comando.Parameters.AddWithValue("@potenciaTotalInicial", potenciaTotalInicial.Value);
                     if (potenciaTotalFinal.HasValue) comando.Parameters.AddWithValue("@potenciaTotalFinal", potenciaTotalFinal.Value);
-                    if (potenciaAtivaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaAtivaInicial", potenciaAtivaInicial.Value);
-                    if (potenciaAtivaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaAtivaFinal", potenciaAtivaFinal.Value);
                     if (potenciaReativaInicial.HasValue) comando.Parameters.AddWithValue("@potenciaReativaInicial", potenciaReativaInicial.Value);
                     if (potenciaReativaFinal.HasValue) comando.Parameters.AddWithValue("@potenciaReativaFinal", potenciaReativaFinal.Value);
                     if (fatorPotenciaInicial.HasValue) comando.Parameters.AddWithValue("@fatorPotenciaInicial", fatorPotenciaInicial.Value);
@@ -324,7 +319,6 @@ namespace Market_WebAPI.Models
                             medicao.Codigo = Convert.ToInt32(reader["Codigo"]);
                             medicao.Horario = Convert.ToDateTime(reader["Horario"]);
                             medicao.PotenciaTotal = Convert.ToDouble(reader["PotenciaTotal"]);
-                            medicao.PotenciaAtiva = Convert.ToDouble(reader["PotenciaAtiva"]);
                             medicao.PotenciaReativa = Convert.ToDouble(reader["PotenciaReativa"]);
                             medicao.FatorPotencia = Convert.ToDouble(reader["FatorPotencia"]);
                             medicao.Corrente = Convert.ToDouble(reader["Corrente"]);

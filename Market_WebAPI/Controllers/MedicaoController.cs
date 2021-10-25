@@ -15,7 +15,6 @@ namespace Market_WebAPI.Controllers
             public int codigoPonto { get; set; }
             public string senhaUsuario { get; set; }
             public double potenciaTotal { get; set; }
-            public double potenciaAtiva { get; set; }
             public double potenciaReativa { get; set; }
             public double fatorPotencia { get; set; }
             public double corrente { get; set; }
@@ -43,7 +42,6 @@ namespace Market_WebAPI.Controllers
                 Medicao medicao = new Medicao();
                 medicao.Horario = dadosMedicao.received_at;
                 medicao.PotenciaTotal = dadosMedicao.uplink_message.decoded_payload.potenciaTotal;
-                medicao.PotenciaAtiva = dadosMedicao.uplink_message.decoded_payload.potenciaAtiva;
                 medicao.PotenciaReativa = dadosMedicao.uplink_message.decoded_payload.potenciaReativa;
                 medicao.FatorPotencia = dadosMedicao.uplink_message.decoded_payload.fatorPotencia;
                 medicao.Corrente = dadosMedicao.uplink_message.decoded_payload.corrente;
@@ -78,7 +76,6 @@ namespace Market_WebAPI.Controllers
         public List<Medicao> GetMedicoes(int cp,
             DateTime? hi = null, DateTime? hf = null,
             double? pti = null, double? ptf = null,
-            double? pai = null, double? paf = null,
             double? pri = null, double? prf = null,
             double? fpi = null, double? fpf = null,
             double? ci = null, double? cf = null,
@@ -100,7 +97,6 @@ namespace Market_WebAPI.Controllers
                         cp,
                         hi, hf,
                         pti, ptf,
-                        pai, paf,
                         pri, prf,
                         fpi, fpf,
                         ci, cf,
