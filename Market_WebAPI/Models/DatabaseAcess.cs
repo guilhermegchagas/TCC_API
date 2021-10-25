@@ -10,8 +10,8 @@ namespace Market_WebAPI.Models
 {
     public static class DatabaseAcess
     {
-        private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
-        //private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
+        //private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
+        private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
 
         #region Usuario
         public static void CadastrarUsuario(Usuario usuario)

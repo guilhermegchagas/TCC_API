@@ -10,7 +10,6 @@ namespace Market_WebAPI.Models
         public int Codigo { get; set; }
         public DateTime Horario { get; set; }
         public double PotenciaTotal { get; set; }
-        public double PotenciaAtiva { get; set; }
         public double PotenciaReativa { get; set; }
         public double FatorPotencia { get; set; }
         public double Corrente { get; set; }
