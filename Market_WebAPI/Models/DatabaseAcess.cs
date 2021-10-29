@@ -10,8 +10,11 @@ namespace Market_WebAPI.Models
 {
     public static class DatabaseAcess
     {
-        //private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
-        private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
+        #if DEBUG
+            private static string connectionString = @"Data Source=DESKTOP-3884TB7;Initial Catalog=EnergyDB;Integrated Security=True";
+        #else
+            private static string connectionString = @"Data Source=localhost;Initial Catalog=guilherme2109300258_tcc;User Id=guilherme2109300258_tcc_user;Password=!tcc123!;";
+        #endif
 
         #region Usuario
         public static void CadastrarUsuario(Usuario usuario)
@@ -162,6 +165,24 @@ namespace Market_WebAPI.Models
             }
         }
 
+        public static void AtualizarPrecoKWH(Ponto ponto)
+        {
+            string procedure = "up_Ponto_UpdatePrecoKWH";
+            using (SqlConnection conexao = new SqlConnection(connectionString))
+            {
+                using (SqlCommand comando = new SqlCommand(procedure, conexao))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@codigoPonto", ponto.Codigo);
+                    comando.Parameters.AddWithValue("@precoKWH", ponto.PrecoKWH);
+                    conexao.Open();
+                    comando.ExecuteNonQuery();
+                    conexao.Close();
+                    return;
+                }
+            }
+        }
+
         public static void DeletarPonto(int codigoPonto)
         {
             string procedure = "del_Ponto_DeletePonto";
@@ -197,6 +218,7 @@ namespace Market_WebAPI.Models
                         ponto.Codigo = codigo;
                         ponto.Nome = reader["Nome"].ToString();
                         ponto.Descricao = reader["Descricao"].ToString();
+                        ponto.PrecoKWH = Convert.ToDouble(reader["PrecoKWH"]);
                         ponto.CodigoUsuario = Convert.ToInt32(reader["CodigoUsuario"]);
                         conexao.Close();
                         return ponto;
@@ -230,6 +252,7 @@ namespace Market_WebAPI.Models
                             ponto.Codigo = Convert.ToInt32(reader["Codigo"]);
                             ponto.Nome = reader["Nome"].ToString();
                             ponto.Descricao = reader["Descricao"].ToString();
+                            ponto.PrecoKWH = Convert.ToDouble(reader["PrecoKWH"]);
                             ponto.CodigoUsuario = codigoUsuario;
                             pontos.Add(ponto);
                         }

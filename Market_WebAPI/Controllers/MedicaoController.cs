@@ -40,7 +40,7 @@ namespace Market_WebAPI.Controllers
             try
             {
                 Medicao medicao = new Medicao();
-                medicao.Horario = dadosMedicao.received_at;
+                medicao.Horario = dadosMedicao.received_at.AddHours(-3);
                 medicao.PotenciaTotal = dadosMedicao.uplink_message.decoded_payload.potenciaTotal;
                 medicao.PotenciaReativa = dadosMedicao.uplink_message.decoded_payload.potenciaReativa;
                 medicao.FatorPotencia = dadosMedicao.uplink_message.decoded_payload.fatorPotencia;

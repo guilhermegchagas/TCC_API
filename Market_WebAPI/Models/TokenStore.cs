@@ -14,8 +14,11 @@ namespace Market_WebAPI.Models
 
         public static TokenStore GetTokenStore(int id)
         {
-            //var dataFile = "c:\\temp\\" + id + ".txt";
-            var dataFile = "c:\\Inetpub\\vhosts\\guilherme2109300258.bateaquihost.com.br\\httpdocs\\tokenStore\\" + id + ".txt";
+            #if DEBUG
+                var dataFile = "c:\\temp\\" + id + ".txt";
+            #else
+                var dataFile = "c:\\Inetpub\\vhosts\\guilherme2109300258.bateaquihost.com.br\\httpdocs\\tokenStore\\" + id + ".txt";
+            #endif
             var data = File.ReadAllText(@dataFile);
             return JsonConvert.DeserializeObject<TokenStore>(data);
         }

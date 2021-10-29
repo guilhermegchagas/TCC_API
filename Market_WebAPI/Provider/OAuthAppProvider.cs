@@ -60,8 +60,11 @@ namespace Market_WebAPI.Provider
         public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
         {
             string id = context.Identity.Claims.First().Value;
-            //var dataFile = "c:\\temp\\" + id + ".txt";
+            #if DEBUG
+                var dataFile = "c:\\temp\\" + id + ".txt";
+            #else
             var dataFile = "c:\\Inetpub\\vhosts\\guilherme2109300258.bateaquihost.com.br\\httpdocs\\tokenStore\\" + id + ".txt";
+            #endif
             TokenStore data = new TokenStore() { token = context.AccessToken, ID = id};
             File.WriteAllText(@dataFile, JsonConvert.SerializeObject(data));
             return base.TokenEndpointResponse(context);

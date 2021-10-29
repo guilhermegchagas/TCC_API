@@ -49,6 +49,25 @@ namespace Market_WebAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Falha ao conectar com o banco.");
             }
         }
+        [Route("api/ponto/atualizarKWH")]
+        public HttpResponseMessage PutAtualizarKWH([FromBody]Ponto ponto)
+        {
+            try
+            {
+                string token = ActionContext.Request.Headers.Authorization.Parameter;
+                TokenStore tokenStore = TokenStore.GetTokenStore(ponto.CodigoUsuario);
+                if (tokenStore.token == token)
+                {
+                    DatabaseAcess.AtualizarPrecoKWH(ponto);
+                    return Request.CreateResponse(HttpStatusCode.Created, "Ponto atualizado.");
+                }
+                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Token inválido.");
+            }
+            catch
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Falha ao conectar com o banco.");
+            }
+        }
         [Route("api/ponto/deletar")]
         public HttpResponseMessage DeletePonto(int codigoUsuario, int codigoPonto)
         {
